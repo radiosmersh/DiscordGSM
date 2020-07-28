@@ -110,6 +110,18 @@ class Servers:
             else:
                 server_cache.set_status('Offline')
 
+        elif server['type'] == 'GamespyV3Query':
+            query = GamespyV3Query(str(server['addr']), int(server['port']))
+            result = query.getInfo()
+            query.disconnect()
+
+            server_cache = ServerCache(server['addr'], server['port'])
+            if result:
+                server_cache.save_data(server['game'], result['hostport'], result['hostname'], result['mapname'], result['maxplayers'], result['numplayers'], result['bf2_bots'], result['password'])
+            else:
+                server_cache.set_status('Offline')
+
+
 
 
 # Game Server Data
