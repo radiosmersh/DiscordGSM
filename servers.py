@@ -2,6 +2,7 @@ import json
 import socket
 import urllib
 import asyncio
+import requests
 from bin import *
 
 def fire_and_forget(f):
@@ -110,6 +111,16 @@ class Servers:
             else:
                 server_cache.set_status('Offline')
 
+        elif server['type'] == 'GamespyV1Query':
+            query = GamespyV1Query(str(server['addr']), int(server['port']))
+            result = query.getInfo()
+            query.disconnect()
+            server_cache = ServerCache(server['addr'], server['port'])
+            if result:
+                server_cache.save_data(server['game'], result['hostport'], result['hostname'], result['mapname'], result['maxplayers'], result['numplayers'], 0, result['password'] == 1)
+            else:
+                server_cache.set_status('Offline')
+
         elif server['type'] == 'GamespyV3Query':
             query = GamespyV3Query(str(server['addr']), int(server['port']))
             result = query.getInfo()
@@ -117,7 +128,7 @@ class Servers:
 
             server_cache = ServerCache(server['addr'], server['port'])
             if result:
-                server_cache.save_data(server['game'], result['hostport'], result['hostname'], result['mapname'], result['maxplayers'], result['numplayers'], result['bf2_bots'], result['password'])
+                server_cache.save_data(server['game'], result['hostport'], result['hostname'], result['mapname'], result['maxplayers'], result['numplayers'], result['bf2_bots'], result['password'] == 1, result['bf2_mapsize'])
             else:
                 server_cache.set_status('Offline')
 
@@ -149,7 +160,7 @@ class ServerCache:
         except EnvironmentError:
             return False
 
-    def save_data(self, game, gameport, name, map, maxplayers, players, bots, password):
+    def save_data(self, game, gameport, name, map, maxplayers, players, bots, password, mapsize = None):
         data = {}
 
         # save game name, ip address, query port
@@ -157,6 +168,14 @@ class ServerCache:
 
         # save server name, map name, max players count
         data['name'], data['map'], data['maxplayers'] = name, map, maxplayers
+        
+        if game == 'Forgotten Hope 2':
+            api_url = 'https://yourls.playfh2.net/yourls-api.php?signature=980a41bd3c&action=shorturl&format="simple"'
+            r = requests.get(f'{api_url}&url=fh2://{data["addr"]}:{data["port"]}')
+            if r.status_code == requests.codes.ok:
+                url = r.text
+                data['url'] = url
+            data['mapsize'] = mapsize
 
         # save current players count, bots count
         data['players'], data['bots'], data['password'] = players, bots, password

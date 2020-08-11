@@ -1,5 +1,7 @@
-__pycache__/
+pi__pycache__/
 cache/*.txt
 cache/*.json
 .vscode
 venv
+*.pyc
+__pycache__

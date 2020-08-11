@@ -225,6 +225,8 @@ class DiscordGSM():
                 embed = discord.Embed(title=title, description=custom, color=color)
             elif server['type'] == 'SourceQuery' and not custom:
                 embed = discord.Embed(title=title, description=f'Connect: steam://connect/{data["addr"]}:{server["port"]}', color=color)
+            elif server['game'] == 'Forgotten Hope 2' and not custom:
+                embed = discord.Embed(title=title, url=data["url"], color=color)
             else:
                 embed = discord.Embed(title=title, color=color)
 
@@ -233,9 +235,12 @@ class DiscordGSM():
  
             flag_emoji = ('country' in server) and (':flag_' + server['country'].lower() + f': {server["country"]}') or ':united_nations: Unknown'
             embed.add_field(name=FIELD_COUNTRY, value=flag_emoji, inline=True)
-
-            embed.add_field(name=FIELD_GAME, value=data['game'], inline=True)
+            
+            if data['game'] != 'Forgotten Hope 2':
+                embed.add_field(name=FIELD_GAME, value=data['game'], inline=True)
             embed.add_field(name=FIELD_CURRENTMAP, value=data['map'], inline=True)
+            if data['game'] == 'Forgotten Hope 2':
+                embed.add_field(name='Map Size', value=data['mapsize'], inline=True)
 
             if status == 'Online':
                 value = str(data['players']) # example: 20/32
@@ -248,8 +253,8 @@ class DiscordGSM():
             if 'image_url' in server:
                 image_url = str(server['image_url'])
             else:
-                image_url = (CUSTOM_IMAGE_URL and CUSTOM_IMAGE_URL.strip()) and CUSTOM_IMAGE_URL or f'https://github.com/DiscordGSM/Map-Thumbnails/raw/master/{urllib.parse.quote(data["game"])}'
-                image_url += f'/{urllib.parse.quote(data["map"])}.jpg'
+                image_url = (CUSTOM_IMAGE_URL and CUSTOM_IMAGE_URL.strip()) and CUSTOM_IMAGE_URL or f'https://github.com/radiosmersh/Map-Thumbnails/raw/master/{urllib.parse.quote(data["game"])}'
+                image_url += f'/{urllib.parse.quote(data["map"])}.png'
 
             embed.set_thumbnail(url=image_url)
         else:
@@ -258,7 +263,7 @@ class DiscordGSM():
             embed = discord.Embed(title='ERROR', description=f'{FIELD_STATUS}: :warning: **Fail to query**', color=color)
             embed.add_field(name=f'{FIELD_ADDRESS}:{FIELD_PORT}', value=f'{server["addr"]}:{server["port"]}', inline=True)
         
-        embed.set_footer(text=f'DiscordGSM v{VERSION} | Game Server Monitor | Last update: ' + datetime.now().strftime('%a, %Y-%m-%d %I:%M:%S%p'), icon_url='https://github.com/DiscordGSM/DiscordGSM/raw/master/images/discordgsm.png')
+        embed.set_footer(text=f'Last update: ' + datetime.now().strftime('%a, %Y-%m-%d %I:%M:%S%p'), icon_url='https://github.com/DiscordGSM/DiscordGSM/raw/master/images/discordgsm.png')
         
         return embed
 
