@@ -66,13 +66,14 @@ class DiscordGSM():
 
     async def on_ready(self):
         # set username and avatar
+        '''
         icon_file_name = 'images/discordgsm' + ('DGSM_TOKEN' in os.environ and '-heroku' or '') + '.png'
         with open(icon_file_name, 'rb') as file:
             try:
-                await bot.user.edit(username='DiscordGSM', avatar=file.read())
+                await bot.user.edit(username='FH2', avatar=file.read())
             except:
                 pass
-
+        '''
         # print info to console
         print('\n----------------')
         print(f'Logged in as:\t{bot.user.name}')
@@ -219,7 +220,7 @@ class DiscordGSM():
             else:
                 color = discord.Color.from_rgb(32, 34, 37) # dark
 
-            title = (data['password'] and ':lock: ' or '') + f'`{data["name"]}`'
+            title = (data['password'] and ':lock: ' or '') + f'{data["name"]}'
             custom = ('custom' in server) and server['custom'] or None
             if custom and custom.strip():
                 embed = discord.Embed(title=title, description=custom, color=color)

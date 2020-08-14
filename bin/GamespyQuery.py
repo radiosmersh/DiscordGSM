@@ -125,7 +125,5 @@ class GamespyV3Query(object):
 
 
 if __name__ == '__main__':
-    query = GamespyV3Query('fh2.cmp-gaming.com', 29900)
-    print(query.getInfo())
-    query = GamespyV1Query('176.9.19.239', 23000)
+    query = GamespyV3Query('bfewaw.com', 29900)
     print(query.getInfo())
