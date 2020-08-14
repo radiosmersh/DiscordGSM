@@ -15,6 +15,6 @@
         "players": "Players",
         "mapsize": "Map Size",
         "country": "Location",
-        "last_update": "Last Update"
+        "lastupdated": "Last Update"
     }
 }
