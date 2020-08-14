@@ -1,5 +1,5 @@
 {
-    "token": "",
+    "token": "NTY5NTc4ODkzNjQ0OTIyOTAw.XLyrrg.Ko0rPBvzW9lvhp30eaptGh5a6b0",
     "prefix": "!",
     "role_id": 123, 
     "image_url": "",
@@ -13,6 +13,8 @@
         "game": "Game",
         "currentmap": "Current Map",
         "players": "Players",
-        "country": "Location"
+        "country": "Location",
+        "lastupdated": "Last Update",
+        "mapsize": "Map Size"
     }
 }

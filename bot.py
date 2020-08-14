@@ -40,8 +40,10 @@ FIELD_ADDRESS = os.getenv("FIELD_ADDRESS", SETTINGS["fieldname"]["address"])
 FIELD_PORT = os.getenv("FIELD_PORT", SETTINGS["fieldname"]["port"])
 FIELD_GAME = os.getenv("FIELD_GAME", SETTINGS["fieldname"]["game"])
 FIELD_CURRENTMAP = os.getenv("FIELD_CURRENTMAP", SETTINGS["fieldname"]["currentmap"])
+FIELD_MAPSIZE = os.getenv("FIELD_MAPSIZE", SETTINGS["fieldname"]["mapsize"])
 FIELD_PLAYERS = os.getenv("FIELD_PLAYERS", SETTINGS["fieldname"]["players"])
 FIELD_COUNTRY = os.getenv("FIELD_COUNTRY", SETTINGS["fieldname"]["country"])
+FIELD_LASTUPDATED = os.getenv("FIELD_LASTUPDATED", SETTINGS["fieldname"]["lastupdated"])
 
 class DiscordGSM():
     def __init__(self, bot):
@@ -199,6 +201,8 @@ class DiscordGSM():
 
     # get game server discord embed
     def get_embed(self, server):
+        
+        global FIELD_STATUS, FIELD_CURRENTMAP, FIELD_MAPSIZE, FIELD_PLAYERS, FIELD_COUNTRY, FIELD_LASTUPDATED
         # load server cache
         server_cache = ServerCache(server['addr'], server['port'])
 
@@ -206,6 +210,14 @@ class DiscordGSM():
         data = server_cache.get_data()
 
         if data:
+            if server['channel'] == 743816489278373950:
+                FIELD_STATUS = 'Trạng Thái'
+                FIELD_CURRENTMAP = 'Map Hiện Tại'
+                FIELD_MAPSIZE = 'Kích Cỡ'
+                FIELD_PLAYERS = 'Người Chơi'
+                FIELD_COUNTRY = 'Host ở'
+                FIELD_LASTUPDATED = 'Update Lúc'
+
             # load server status Online/Offline
             status = server_cache.get_status()
 
@@ -242,7 +254,7 @@ class DiscordGSM():
                 embed.add_field(name=FIELD_GAME, value=data['game'], inline=True)
             embed.add_field(name=FIELD_CURRENTMAP, value=data['map'], inline=True)
             if data['game'] == 'Forgotten Hope 2':
-                embed.add_field(name='Map Size', value=data['mapsize'], inline=True)
+                embed.add_field(name=FIELD_MAPSIZE, value=data['mapsize'], inline=True)
 
             if status == 'Online':
                 value = str(data['players']) # example: 20/32
@@ -258,6 +270,13 @@ class DiscordGSM():
                 image_url = (CUSTOM_IMAGE_URL and CUSTOM_IMAGE_URL.strip()) and CUSTOM_IMAGE_URL or f'https://github.com/radiosmersh/Map-Thumbnails/raw/master/{urllib.parse.quote(data["game"])}'
                 image_url += f'/{urllib.parse.quote(data["map"])}.png'
 
+            if server['channel'] == 743816489278373950:
+                FIELD_STATUS = os.getenv("FIELD_STATUS", SETTINGS["fieldname"]["status"])
+                FIELD_CURRENTMAP = os.getenv("FIELD_CURRENTMAP", SETTINGS["fieldname"]["currentmap"])
+                FIELD_MAPSIZE = os.getenv("FIELD_MAPSIZE", SETTINGS["fieldname"]["mapsize"])
+                FIELD_PLAYERS = os.getenv("FIELD_PLAYERS", SETTINGS["fieldname"]["players"])
+                FIELD_COUNTRY = os.getenv("FIELD_COUNTRY", SETTINGS["fieldname"]["country"])
+
             embed.set_thumbnail(url=image_url)
         else:
             # server fail to query
@@ -266,12 +285,18 @@ class DiscordGSM():
             embed.add_field(name=f'{FIELD_ADDRESS}:{FIELD_PORT}', value=f'{server["addr"]}:{server["port"]}', inline=True)
         
         if server['channel'] == 743816489278373950:
+            FIELD_LASTUPDATED = 'Update Lúc'
             timeUTC = datetime.now()
             timezoneLocal = timezone('Asia/Saigon')
             timeLocal = utc.localize(timeUTC).astimezone(timezoneLocal)
-            embed.set_footer(text=f'Last update: ' + timeLocal.strftime('%a, %Y-%m-%d %I:%M:%S%p'))
+            embed.set_footer(text=f'{FIELD_LASTUPDATED}: ' + timeLocal.strftime('%a, %Y-%m-%d %I:%M:%S%p'))
+            FIELD_LASTUPDATED = os.getenv("FIELD_LASTUPDATED", SETTINGS["fieldname"]["lastupdated"])
         else:
-            embed.set_footer(text=f'Last update: ' + datetime.now().strftime('%a, %Y-%m-%d %I:%M:%S%p'))
+            if server['channel'] == 743816489278373950:
+                FIELD_LASTUPDATED = 'Update Lúc'
+            embed.set_footer(text=f'{FIELD_LASTUPDATED}: ' + datetime.now().strftime('%a, %Y-%m-%d %I:%M:%S%p'))
+            if server['channel'] == 743816489278373950:
+                FIELD_LASTUPDATED = os.getenv("FIELD_LASTUPDATED", SETTINGS["fieldname"]["lastupdated"])
         
         return embed
 

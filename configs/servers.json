@@ -1,1 +1,66 @@
-[]
+[
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "144.76.236.11",
+        "port": 29902,
+        "channel": 634062332988751873,
+        "country": "DE"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "144.76.236.11",
+        "port": 29900,
+        "channel": 634062332988751873,
+        "country": "DE"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "34.92.81.161",
+        "port": 29903,
+        "channel": 634062332988751873,
+        "country": "HK"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "144.76.236.11",
+        "port": 29901,
+        "channel": 634062332988751873,
+        "country": "DE"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "bfewaw.com",
+        "port": 29900,
+        "channel": 634062332988751873,
+        "country": "US"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "fh2.cmp-gaming.com",
+        "port": 29900,
+        "channel": 634062332988751873,
+        "country": "DE"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "184.71.170.154",
+        "port": 29900,
+        "channel": 634062332988751873,
+        "country": "CA"
+    },
+    {
+        "type": "GamespyV3Query",
+        "game": "Forgotten Hope 2",
+        "addr": "34.92.81.161",
+        "port": 29903,
+        "channel": 514466311825522689,
+        "country": "HK"
+    }
+]
