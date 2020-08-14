@@ -13,6 +13,7 @@
         "game": "Game",
         "currentmap": "Current Map",
         "players": "Players",
+        "mapsize": "Map Size",
         "country": "Location",
         "last_update": "Last Update"
     }
