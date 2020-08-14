@@ -3,6 +3,7 @@ import urllib
 import asyncio
 import requests
 from datetime import datetime
+from pytz import timezone, utc
 
 # discord
 import discord
@@ -264,7 +265,13 @@ class DiscordGSM():
             embed = discord.Embed(title='ERROR', description=f'{FIELD_STATUS}: :warning: **Fail to query**', color=color)
             embed.add_field(name=f'{FIELD_ADDRESS}:{FIELD_PORT}', value=f'{server["addr"]}:{server["port"]}', inline=True)
         
-        embed.set_footer(text=f'Last update: ' + datetime.now().strftime('%a, %Y-%m-%d %I:%M:%S%p'))
+        if server['channel'] == 743816489278373950:
+            timeUTC = datetime.now()
+            timezoneLocal = timezone('Asia/Saigon')
+            timeLocal = utc.localize(timeUTC).astimezone(timezoneLocal)
+            embed.set_footer(text=f'Last update: ' + timeLocal.strftime('%a, %Y-%m-%d %I:%M:%S%p'))
+        else:
+            embed.set_footer(text=f'Last update: ' + datetime.now().strftime('%a, %Y-%m-%d %I:%M:%S%p'))
         
         return embed
 
