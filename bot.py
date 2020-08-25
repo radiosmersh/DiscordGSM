@@ -4,6 +4,7 @@ import asyncio
 import requests
 from datetime import datetime
 from pytz import timezone, utc
+from copy import deepcopy
 
 # discord
 import discord
@@ -173,18 +174,28 @@ class DiscordGSM():
 
     # remove old discord embed and send new discord embed
     async def refresh_discord_embed(self):
-        # refresh servers.json cache
-        self.servers = Servers()
-        self.server_list = self.servers.get()
+        try:
+            # refresh servers.json cache
+            self.servers = Servers()
+            self.server_list = self.servers.get()
 
-        # remove old discord embed
-        channels = [server['channel'] for server in self.server_list]
-        channels = list(set(channels)) # remove duplicated channels
-        for channel in channels:
-            await bot.get_channel(channel).purge(check=lambda m: m.author==bot.user)
-        
-        # send new discord embed
-        self.messages = [await bot.get_channel(s['channel']).send(content=('frontMessage' in s and s['frontMessage'].strip()) and s['frontMessage'] or None, embed=self.get_embed(s)) for s in self.server_list]
+            get_player_number = lambda server: ServerCache(server['addr'], server['port']).get_data()['players']
+
+            # remove old discord embed and sort servers in channels
+            channels = [server['channel'] for server in self.server_list]
+            channels = list(set(channels)) # remove duplicated channels
+
+            sorted_server_list = []
+            for channel in channels:
+                sorted_server_list.extend(sorted([server for server in self.server_list if server['channel'] == channel], key=get_player_number, reversed=True))
+                await bot.get_channel(channel).purge(check=lambda m: m.author==bot.user)
+            self.server_list = deepcopy(sorted_server_list)  
+            del(sorted_server_list)          
+
+            # send new discord embed
+            self.messages = [await bot.get_channel(s['channel']).send(content=('frontMessage' in s and s['frontMessage'].strip()) and s['frontMessage'] or None, embed=self.get_embed(s)) for s in self.server_list]
+        except Exception as e:
+            print(e)
     
     def print_to_console(self, value):
         print(datetime.now().strftime('%Y-%m-%d %H:%M:%S: ') + value)
