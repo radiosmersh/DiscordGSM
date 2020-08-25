@@ -187,7 +187,7 @@ class DiscordGSM():
 
             sorted_server_list = []
             for channel in channels:
-                sorted_server_list.extend(sorted([server for server in self.server_list if server['channel'] == channel], key=get_player_number, reversed=True))
+                sorted_server_list.extend(sorted([server for server in self.server_list if server['channel'] == channel], key=get_player_number, reverse=True))
                 await bot.get_channel(channel).purge(check=lambda m: m.author==bot.user)
             self.server_list = deepcopy(sorted_server_list)  
             del(sorted_server_list)          
