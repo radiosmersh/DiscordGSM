@@ -179,7 +179,7 @@ class DiscordGSM():
             self.servers = Servers()
             self.server_list = self.servers.get()
 
-            get_player_number = lambda server: ServerCache(server['addr'], server['port']).get_data()['players']
+            get_player_number = lambda server: int(ServerCache(server['addr'], server['port']).get_data()['players'])
 
             # remove old discord embed and sort servers in channels
             channels = [server['channel'] for server in self.server_list]
