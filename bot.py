@@ -15,16 +15,11 @@ from bin import *
 from servers import Servers, ServerCache
 from settings import Settings
 
-# download servers.json every heroku dyno start
-servers_json_url = os.getenv('SERVERS_JSON_URL')
-if servers_json_url and servers_json_url.strip():
-    print('Downloading servers.json...')
-    try:
-        r = requests.get(servers_json_url)
-        with open('configs/servers.json', 'wb') as file:
-            file.write(r.content)
-    except:
-        print('Fail to download servers.json on start up')
+# [HEROKU] get and load servers json from SERVERS_JSON env directly
+servers_json = os.getenv('SERVERS_JSON')
+if servers_json and servers_json.strip():
+    with open('configs/servers.json', 'w') as file:
+        file.write(servers_json)
 
 # env values
 VERSION = '1.7.5'
