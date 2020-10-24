@@ -5,6 +5,14 @@
     "logo": "https://github.com/DiscordGSM/DiscordGSM/raw/master/images/discordgsm.png",
     "keywords": ["discordgsm", "query", "gameserver", "gameservers", "monitor", "dgsm", "game-servers", "discord", "gaming", "game"],
     "env": {
+        "HEROKU_APP_NAME": {
+            "description": "Heroku app name - same as the app name set above",
+            "value": ""
+        },
+        "DGSM_PREFIX": {
+            "description": "Bot commands prefix (Default: !)",
+            "value": "!"
+        },
         "DGSM_TOKEN": {
             "description": "Bot token - You can get it on https://discordapp.com/developers/applications/",
             "value": ""
@@ -22,13 +30,9 @@
             "description": "Discord embed refresh rate in seconds (Default: 15)",
             "value": "15"
         },
-        "PRESENCE_TYPE": {
-            "description": "Discord presence style (Default: 3)",
-            "value": "3"
-        },
-        "PRESENCE_RATE": {
-            "description": "Discord presence refresh rate in minutes (Default: 5)",
-            "value": "5"
+        "SERVERS_JSON": {
+            "description": "servers.json data. (Default: []) Wiki: https://github.com/DiscordGSM/DiscordGSM/wiki/Edit-servers.json",
+            "value": "[]"
         }
     },
     "buildpacks": [
