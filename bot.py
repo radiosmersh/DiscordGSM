@@ -252,6 +252,13 @@ class DiscordGSM():
                     color = discord.Color.from_rgb(250, 166, 26) # yellew
                 else:
                     color = discord.Color.from_rgb(67, 181, 129) # green
+                    try:
+                        if 'color' in server:
+                            h = server['color'].lstrip('#')
+                            rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+                            color = discord.Color.from_rgb(rgb[0], rgb[1], rgb[2])
+                    except Exception as e:
+                        self.print_to_console(e)
             else:
                 color = discord.Color.from_rgb(32, 34, 37) # dark
 
