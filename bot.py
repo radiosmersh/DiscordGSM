@@ -38,7 +38,7 @@ if 'DGSM_TOKEN' in os.environ:
                 time.sleep(1)
 
 # env values
-VERSION = '1.7.5'
+VERSION = '1.8.1'
 SETTINGS = Settings.get()
 DGSM_TOKEN = os.getenv('DGSM_TOKEN', SETTINGS['token'])
 DGSM_PREFIX = os.getenv("DGSM_PREFIX", SETTINGS.get('prefix', '!'))
