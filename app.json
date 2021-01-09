@@ -17,14 +17,13 @@
             "description": "Bot token - You can get it on https://discordapp.com/developers/applications/",
             "value": ""
         },
-        "SERVERS_JSON_URL": {
-            "description": "servers.json download url (You can set it later)",
-            "value": "https://github.com/DiscordGSM/DiscordGSM/raw/master/configs/servers.json",
-            "required": false
+        "PRESENCE_RATE": {
+            "description": "Discord presence refresh rate in minutes (Default: 5)",
+            "value": "5"
         },
-        "DGSM_PREFIX": {
-            "description": "Bot commands prefix (Default: !)",
-            "value": "!"
+        "PRESENCE_TYPE": {
+            "description": "Discord presence style (Default: 3)",
+            "value": "3"
         },
         "REFRESH_RATE": {
             "description": "Discord embed refresh rate in seconds (Default: 15)",
