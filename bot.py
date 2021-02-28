@@ -153,7 +153,7 @@ class DiscordGSM():
                 server_cache = ServerCache(server['addr'], server['port'])
                 data = server_cache.get_data()
                 if data and server_cache.get_status() == 'Online':
-                    total_activeplayers += int(data['players'])
+                    total_activeplayers += int(data['numplayers'])
                     total_maxplayers += int(data['maxplayers'])
                   
             activity_text = f'{total_activeplayers}/{total_maxplayers} active players' if total_maxplayers > 0 else '0 players' 
@@ -306,7 +306,7 @@ class DiscordGSM():
         if server['channel'] == 743816489278373950:
             FIELD_LASTUPDATED = 'Update Lúc'
             timeUTC = datetime.now()
-            timezoneLocal = timezone('Asia/Ho_Chi_Minh')
+            timezoneLocal = timezone('Asia/Yekaterinburg')
             timeLocal = utc.localize(timeUTC).astimezone(timezoneLocal)
             embed.set_footer(text=f'{FIELD_LASTUPDATED}: ' + timeLocal.strftime('%a, %Y-%m-%d %I:%M:%S%p'))
             FIELD_LASTUPDATED = os.getenv("FIELD_LASTUPDATED", SETTINGS["fieldname"]["lastupdated"])
