@@ -153,7 +153,8 @@ class DiscordGSM():
                 server_cache = ServerCache(server['addr'], server['port'])
                 data = server_cache.get_data()
                 if data and server_cache.get_status() == 'Online':
-                    total_activeplayers += int(data['numplayers'])
+                    if data['players'].isdigit():
+                        total_activeplayers = int(data['players'])
                     total_maxplayers += int(data['maxplayers'])
                   
             activity_text = f'{total_activeplayers}/{total_maxplayers} active players' if total_maxplayers > 0 else '0 players' 
