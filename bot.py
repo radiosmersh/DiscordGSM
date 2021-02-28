@@ -306,7 +306,7 @@ class DiscordGSM():
         if server['channel'] == 743816489278373950:
             FIELD_LASTUPDATED = 'Update Lúc'
             timeUTC = datetime.now()
-            timezoneLocal = timezone('Asia/Saigon')
+            timezoneLocal = timezone('Asia/Ho_Chi_Minh')
             timeLocal = utc.localize(timeUTC).astimezone(timezoneLocal)
             embed.set_footer(text=f'{FIELD_LASTUPDATED}: ' + timeLocal.strftime('%a, %Y-%m-%d %I:%M:%S%p'))
             FIELD_LASTUPDATED = os.getenv("FIELD_LASTUPDATED", SETTINGS["fieldname"]["lastupdated"])
