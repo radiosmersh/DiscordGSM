@@ -3,7 +3,7 @@ import socket
 import urllib
 import asyncio
 import requests
-from short_url import decode_url
+from short_url import encode_url
 from bin import *
 
 def fire_and_forget(f):
