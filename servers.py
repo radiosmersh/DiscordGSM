@@ -182,7 +182,6 @@ class ServerCache:
             url = f"fh2://{data['addr']}:{data['port']}"
             data['url'] = decode_url(url)  
             data['mapsize'] = mapsize
-            '''
 
 
         # save current players count, bots count
