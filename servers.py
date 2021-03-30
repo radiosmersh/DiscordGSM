@@ -180,8 +180,7 @@ class ServerCache:
                 data['url'] = url
             '''
             url = f"fh2://{data['addr']}:{data['port']}"
-            print(url)
-            data['url'] = decode_url(url)  
+            data['url'] = encode_url(url)  
             data['mapsize'] = mapsize
 
 
