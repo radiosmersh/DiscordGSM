@@ -185,7 +185,7 @@ class ServerCache:
                     url = "http://tinyurl.com/api-create.php" + "?" \
                         + urllib.parse.urlencode({"url": url_long})
                     res = requests.get(url)
-                    return res
+                    return res.text
                 except Exception as e:
                     return 'http://forgottenhope.warumdarum.de/fh2_gameserver.php?'
 
