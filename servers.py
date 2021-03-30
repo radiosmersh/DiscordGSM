@@ -3,6 +3,7 @@ import socket
 import urllib
 import asyncio
 import requests
+from short_url import decode_url
 from bin import *
 
 def fire_and_forget(f):
@@ -170,12 +171,18 @@ class ServerCache:
         data['name'], data['map'], data['maxplayers'] = name, map, maxplayers
         
         if game == 'Forgotten Hope 2':
+            '''
             api_url = 'https://yourls.playfh2.net/yourls-api.php?signature=980a41bd3c&action=shorturl&format="simple"'
-            r = requests.get(f'{api_url}&url=fh2://{data["addr"]}:{data["port"]}')
+            url = f"fh2://{data['addr']}:{data['port']}"
+            r = requests.get(f'{api_url}{urlencode(url)}
             if r.status_code == requests.codes.ok:
                 url = r.text
                 data['url'] = url
+            '''
+            data['url'] = decode_url(url)  
             data['mapsize'] = mapsize
+            '''
+
 
         # save current players count, bots count
         data['players'], data['bots'], data['password'] = players, bots, password

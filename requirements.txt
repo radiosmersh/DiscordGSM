@@ -1,3 +1,4 @@
 discord.py==1.5.1
 requests==2.24.0
 pytz
+short_url
