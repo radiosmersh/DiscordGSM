@@ -3,7 +3,6 @@ import socket
 import urllib
 import asyncio
 import requests
-from short_url import encode_url
 from bin import *
 
 def fire_and_forget(f):
@@ -180,7 +179,19 @@ class ServerCache:
                 data['url'] = url
             '''
             url = f"fh2://{data['addr']}:{data['port']}"
-            data['url'] = encode_url(url)  
+
+            def shorten(url_long):
+                try:
+                    url = "http://tinyurl.com/api-create.php" + "?" \
+                        + urllib.parse.urlencode({"url": url_long})
+                    res = requests.get(url)
+                    return res
+                except Exception as e:
+                    return 'http://forgottenhope.warumdarum.de/fh2_gameserver.php?'
+
+
+
+            data['url'] = shorten(url)  
             data['mapsize'] = mapsize
 
 
