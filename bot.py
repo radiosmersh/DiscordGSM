@@ -55,7 +55,7 @@ FIELD_CURRENTMAP = os.getenv("FIELD_CURRENTMAP", SETTINGS["fieldname"]["currentm
 FIELD_PLAYERS = os.getenv("FIELD_PLAYERS", SETTINGS["fieldname"]["players"])
 FIELD_COUNTRY = os.getenv("FIELD_COUNTRY", SETTINGS["fieldname"]["country"])
 FIELD_MAPSIZE = os.getenv("FIELD_MAPSIZE", SETTINGS["fieldname"]["mapsize"])
-
+FIELD_LASTUPDATED = os.getenv("FIELD_MAPSIZE", SETTINGS["fieldname"]["lastupdated"])
 
 class DiscordGSM():
     def __init__(self, bot):
