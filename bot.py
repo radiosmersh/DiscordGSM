@@ -54,6 +54,8 @@ FIELD_GAME = os.getenv("FIELD_GAME", SETTINGS["fieldname"]["game"])
 FIELD_CURRENTMAP = os.getenv("FIELD_CURRENTMAP", SETTINGS["fieldname"]["currentmap"])
 FIELD_PLAYERS = os.getenv("FIELD_PLAYERS", SETTINGS["fieldname"]["players"])
 FIELD_COUNTRY = os.getenv("FIELD_COUNTRY", SETTINGS["fieldname"]["country"])
+FIELD_MAPSIZE = os.getenv("FIELD_MAPSIZE", SETTINGS["fieldname"]["mapsize"])
+
 
 class DiscordGSM():
     def __init__(self, bot):
