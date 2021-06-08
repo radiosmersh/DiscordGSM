@@ -1,7 +1,7 @@
-pi__pycache__/
+__pycache__/
 cache/*.txt
 cache/*.json
 .vscode
-venv
+node_modules
+venv/
 *.pyc
-__pycache__
