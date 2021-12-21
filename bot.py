@@ -322,7 +322,7 @@ class DiscordGSM():
             image_url = requote_uri('https://raw.githubusercontent.com/radiosmersh/Map-Thumbnails/master/Forgotten Hope 2/%s.png' % data["map"])
 
         if image_url:
-            embed.set_thumbnail(url=image_url)
+            embed.set_image(url=image_url)
 
         if server['channel'] == 743816489278373950:
             time_utc = datetime.utcnow()
