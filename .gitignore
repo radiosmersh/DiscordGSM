@@ -6,3 +6,4 @@ venv/
 *.env
 package-lock.json
 servers.json
+.vscode

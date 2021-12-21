@@ -1,9 +1,11 @@
 import os
 import asyncio
 import requests
+import traceback
 import base64
 from datetime import datetime
 from pytz import timezone, utc
+from requests.utils import requote_uri
 from copy import deepcopy
 
 # discord
@@ -112,6 +114,7 @@ class DiscordGSM():
             except Exception as e:
                 self.message_error_count += 1
                 self.print_to_console(f'ERROR: Failed to edit message for server: {self.get_server_info(server)}. \n {self.message_error_count} error(s) in update_messages(). Missing permissions?\n{e}')
+                self.print_to_console(traceback.format_exc())
             finally:
                 await asyncio.sleep(SEND_DELAY)
         self.print_to_console(f'{updated_count} messages updated.')
@@ -148,6 +151,7 @@ class DiscordGSM():
             except Exception as e:
                 self.message_error_count += 1
                 self.print_to_console(f'ERROR: Failed to send message for server: {self.get_server_info(server)}. Missing permissions ?\n{e}')
+                self.print_to_console(traceback.format_exc())
             finally:
                 self.servers.update_server_file(self.server_list)
                 await asyncio.sleep(SEND_DELAY)
@@ -247,8 +251,8 @@ class DiscordGSM():
             else data["password"] if type(self.get_value(data, "password")) == bool 
             else False)
 
-        title = self.get_value(server, "title") or self.get_value(data, "game") or self.get_value(server, "game")
-        title = f':lock: {title}' if lock else  f':unlock: {title}'
+        # title = self.get_value(server, "title") or self.get_value(data, "game") or self.get_value(server, "game")
+        # title = f':lock: {title}' if lock else  f':unlock: {title}'
         
         description = self.get_value(server, "custom")
         
@@ -270,9 +274,11 @@ class DiscordGSM():
         color = self.determineColor(server, data, cache_status)
 
         # Build embed
-        embed = (discord.Embed(title=title, description=description, color=color) if description 
-            else discord.Embed(title=title, color=color))
+        embed = discord.Embed(title=hostname, color=color)
+        # embed = (discord.Embed(title=title, description=description, color=color) if description 
+        #    else discord.Embed(title=title, color=color))
 
+        global FIELD_STATUS, FIELD_CURRENTMAP, FIELD_MAPSIZE, FIELD_PLAYERS, FIELD_COUNTRY, FIELD_LASTUPDATE, FIELD_JOIN
         if server['channel'] == 743816489278373950:
                 FIELD_STATUS = 'Trạng Thái'
                 FIELD_CURRENTMAP = 'Map Hiện Tại'
@@ -283,7 +289,6 @@ class DiscordGSM():
                 FIELD_JOIN = 'Tham gia Máy Chủ'
 
         embed.add_field(name=FIELD_STATUS, value=status, inline=True)
-        embed.add_field(name=FIELD_NAME, value=hostname, inline=True)
         embed.add_field(name=SPACER, value=SPACER, inline=True)
         embed.add_field(name=FIELD_PLAYERS, value=players_string, inline=True)
         embed.add_field(name=FIELD_ADDRESS, value=f'`{address}`', inline=True)
@@ -311,32 +316,21 @@ class DiscordGSM():
                     embed.add_field(name=FIELD_JOIN, value=f'steam://connect/{data["address"]}:{port}', inline=False)
             else:
                 embed.add_field(name=FIELD_LAUNCH, value=f'steam://rungameid/{steam_id}', inline=False)
-        if server['game'] = "Forgotten Hope 2":
-            url = f"fh2://{data['addr']}:{data['port']}"
-
-            def shorten(url_long):
-                try:
-                    url = "http://tinyurl.com/api-create.php" + "?" \
-                        + urllib.parse.urlencode({"url": url_long})
-                    res = requests.get(url)
-                    return res.text
-                except Exception as e:
-                    return 'http://forgottenhope.warumdarum.de/fh2_gameserver.php?'
-
-            embed.add_field(name=FIELD_JOIN, value=shorten(url))
-            
-            image_url = f'https://github.com/radiosmersh/Map-Thumbnails/raw/master/{urllib.parse.quote(data["game"])}'
+        if server['game'] == "Forgotten Hope 2":
+            url = f"fh2://{data['address']}:{data['port']}"
+            embed.add_field(name=FIELD_JOIN, value=f"<{url}>")
+            start = time.time()
+            image_url = requote_uri('https://raw.githubusercontent.com/radiosmersh/Map-Thumbnails/master/Forgotten Hope 2/%s.png' % data["map"])
 
         if image_url:
             embed.set_thumbnail(url=image_url)
 
-        if server['channel'] = 743816489278373950:
+        if server['channel'] == 743816489278373950:
             time_utc = datetime.utcnow()
             timezone_local = timezone('Asia/Saigon')
-            time_local = utc.localize(time_utc).astimezone(timezoneLocal)
+            time_local = utc.localize(time_utc).astimezone(timezone_local)
             embed.set_footer(text=f'{FIELD_LASTUPDATE}: {time_local.strftime("%Y-%m-%d %H:%M:%S")}{SPACER}', icon_url=CUSTOM_IMAGE_URL)
         else:
-            time_utc.strftime("%Y-%m-%d %H:%M:%S")
             embed.set_footer(text=f'{FIELD_LASTUPDATE}: {datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")}{SPACER}', icon_url=CUSTOM_IMAGE_URL)
 
         if server['channel'] == 743816489278373950:
@@ -355,6 +349,8 @@ class DiscordGSM():
         maxplayers = self.get_value(data, "maxplayers") or self.get_value(server, "maxplayers") or "?"
 
         if cache_status == "Online" and players != "?" and maxplayers != "??":
+            players = int(players)
+            maxplayers = int(maxplayers)
             if players >= maxplayers:
                 color = discord.Color.from_rgb(240, 71, 71) # red
             elif players >= maxplayers / 2:
@@ -389,7 +385,7 @@ class DiscordGSM():
             players = "?"
             bots = None
 
-        return f'{players}({bots})/{maxplayers}' if bots is not None and bots > 0 else f'{players}/{maxplayers}'
+        return f'{players}({bots})/{maxplayers}' if bots is not None and int(bots) > 0 else f'{int(players)}/{int(maxplayers)}'
 
 client = commands.Bot(command_prefix=PREFIX)
 

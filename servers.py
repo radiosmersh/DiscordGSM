@@ -49,7 +49,7 @@ class Servers:
 
         return json.loads(data)
 
-    def get_distinct_server_count(self):       
+    def get_distinct_server_count(self):  
         uniqueServers = [f'{server["address"]}:{str(server["port"])}' for server in self.servers]
         return len(list(set(uniqueServers)))
 
@@ -96,27 +96,25 @@ class Servers:
                 server_cache.set_status('Offline')
 
         elif server['type'] == 'GamespyV1Query':
-            query = GamespyV1Query(str(server['addr']), int(server['port']))
+            query = GamespyV1Query(str(server['address']), int(server['port']))
             result = query.getInfo()
             query.disconnect()
-            server_cache = ServerCache(server['addr'], server['port'])
+            server_cache = ServerCache(server['address'], server['port'])
             if result:
                 server_cache.save_data(server['game'], result['hostport'], result['hostname'], result['mapname'], result['maxplayers'], result['numplayers'], 0, result['password'] == 1)
             else:
                 server_cache.set_status('Offline')
 
         elif server['type'] == 'GamespyV3Query':
-            query = GamespyV3Query(str(server['addr']), int(server['port']))
+            query = GamespyV3Query(str(server['address']), int(server['port']))
             result = query.getInfo()
             query.disconnect()
 
-            server_cache = ServerCache(server['addr'], server['port'])
+            server_cache = ServerCache(server['address'], server['port'])
             if result:
                 server_cache.save_data(server['game'], result['hostport'], result['hostname'], result['mapname'], result['maxplayers'], result['numplayers'], result['bf2_bots'], result['password'] == 1, result['bf2_mapsize'])
             else:
                 server_cache.set_status('Offline')
-
-
 
         elif str(server["type"]).lower() == "fake":
             server_cache = ServerCache(server["address"], server["port"])
