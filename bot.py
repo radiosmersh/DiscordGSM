@@ -319,7 +319,6 @@ class DiscordGSM():
         if server['game'] == "Forgotten Hope 2":
             url = f"fh2://{data['address']}:{data['port']}"
             embed.add_field(name=FIELD_JOIN, value=f"<{url}>")
-            start = time.time()
             image_url = requote_uri('https://raw.githubusercontent.com/radiosmersh/Map-Thumbnails/master/Forgotten Hope 2/%s.png' % data["map"])
 
         if image_url:
