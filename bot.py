@@ -27,7 +27,7 @@ assert len(segs) == 3, "invalid token"
 clientid = base64.b64decode(segs[0]).decode()
 invite_link = f'https://discord.com/api/oauth2/authorize?client_id={clientid}&permissions=93184&scope=bot'
 
-VERSION = "1.9.2"
+VERSION = "1.9.3"
 # Get Env
 PREFIX = os.getenv("DGSM_PREFIX") or "!"
 ROLEID = os.getenv("DGSM_ROLEID")
@@ -247,99 +247,105 @@ class DiscordGSM():
         cache_status = server_cache.get_status()
 
         # Evaluate fields
-        lock = (server["locked"] if type(self.get_value(server, "locked")) == bool 
-            else data["password"] if type(self.get_value(data, "password")) == bool 
-            else False)
+        try:
+            lock = (server["locked"] if type(self.get_value(server, "locked")) == bool 
+                else data["password"] if type(self.get_value(data, "password")) == bool 
+                else False)
 
-        # title = self.get_value(server, "title") or self.get_value(data, "game") or self.get_value(server, "game")
-        # title = f':lock: {title}' if lock else  f':unlock: {title}'
-        
-        description = self.get_value(server, "custom")
-        
-        status = (f':green_circle: **{FIELD_ONLINE}**' if cache_status == "Online" 
-            else f':red_circle: **{FIELD_OFFLINE}**' if cache_status == "Offline" and data is not False 
-            else f':yellow_circle: **{FIELD_UNKNOWN}**')
+            # title = self.get_value(server, "title") or self.get_value(data, "game") or self.get_value(server, "game")
+            # title = f':lock: {title}' if lock else  f':unlock: {title}'
+            
+            description = self.get_value(server, "custom")
+            
+            status = (f':green_circle: **{FIELD_ONLINE}**' if cache_status == "Online" 
+                else f':red_circle: **{FIELD_OFFLINE}**' if cache_status == "Offline" and data is not False 
+                else f':yellow_circle: **{FIELD_UNKNOWN}**')
 
-        hostname = self.get_value(server, "hostname") or self.get_value(data, "name") or SPACER
-        players_string = self.determinePlayerString(server, data, cache_status)   
-        port = self.get_value(data, "port")
-        address = self.get_value(server, "public_address") or self.get_value(data, "address") and port and f'{data["address"]}:{port}' or SPACER
-        password = self.get_value(server, "password")
-        country = self.get_value(server, "country")
-        map = None if  self.get_value(server, "map") == False else self.get_value(server, "map") or self.get_value(data, "map")
-        map_size = self.get_value(data, "mapsize")
-        image_url = self.get_value(server, "image_url")
-        steam_id = self.get_value(server, "steam_id")
-        direct_join = self.get_value(server, "direct_join")
-        color = self.determineColor(server, data, cache_status)
+            hostname = self.get_value(server, "hostname") or self.get_value(data, "name") or SPACER
+            players_string = self.determinePlayerString(server, data, cache_status)   
+            port = self.get_value(data, "port")
+            address = self.get_value(server, "public_address") or self.get_value(data, "address") and port and f'{self.get_value(data, "address")}:{port}' or SPACER
+            password = self.get_value(server, "password")
+            country = self.get_value(server, "country")
+            map = None if  self.get_value(server, "map") == False else self.get_value(server, "map") or self.get_value(data, "map")
+            map_size = self.get_value(data, "mapsize")
+            image_url = self.get_value(server, "image_url")
+            steam_id = self.get_value(server, "steam_id")
+            direct_join = self.get_value(server, "direct_join")
+            color = self.determineColor(server, data, cache_status)
+        except Exception as e:
+            self.print_to_console(f'Error Evaluate fields.\n{e}')
 
         # Build embed
-        embed = discord.Embed(title=hostname, color=color)
-        # embed = (discord.Embed(title=title, description=description, color=color) if description 
-        #    else discord.Embed(title=title, color=color))
+        try:
+            embed = discord.Embed(title=hostname, color=color)
+            # embed = (discord.Embed(title=title, description=description, color=color) if description 
+            #    else discord.Embed(title=title, color=color))
 
-        global FIELD_STATUS, FIELD_CURRENTMAP, FIELD_MAPSIZE, FIELD_PLAYERS, FIELD_COUNTRY, FIELD_LASTUPDATE, FIELD_JOIN
-        if server['channel'] == 743816489278373950:
-                FIELD_STATUS = 'Trạng Thái'
-                FIELD_CURRENTMAP = 'Map Hiện Tại'
-                FIELD_MAPSIZE = 'Kích Cỡ'
-                FIELD_PLAYERS = 'Người Chơi'
-                FIELD_COUNTRY = 'Host ở'
-                FIELD_LASTUPDATE = 'Update Lúc'
-                FIELD_JOIN = 'Tham gia Máy Chủ'
+            global FIELD_STATUS, FIELD_CURRENTMAP, FIELD_MAPSIZE, FIELD_PLAYERS, FIELD_COUNTRY, FIELD_LASTUPDATE, FIELD_JOIN
+            if server['channel'] == 743816489278373950:
+                    FIELD_STATUS = 'Trạng Thái'
+                    FIELD_CURRENTMAP = 'Map Hiện Tại'
+                    FIELD_MAPSIZE = 'Kích Cỡ'
+                    FIELD_PLAYERS = 'Người Chơi'
+                    FIELD_COUNTRY = 'Host ở'
+                    FIELD_LASTUPDATE = 'Update Lúc'
+                    FIELD_JOIN = 'Tham gia Máy Chủ'
 
-        embed.add_field(name=FIELD_STATUS, value=status, inline=True)
-        embed.add_field(name=SPACER, value=SPACER, inline=True)
-        embed.add_field(name=FIELD_PLAYERS, value=players_string, inline=True)
-        embed.add_field(name=FIELD_ADDRESS, value=f'`{address}`', inline=True)
- 
-        if password is None:
+            embed.add_field(name=FIELD_STATUS, value=status, inline=True)
             embed.add_field(name=SPACER, value=SPACER, inline=True)
-        else:
-            embed.add_field(name=FIELD_PASSWORD, value=f'`{password}`', inline=True)
-
-        if country:
-            embed.add_field(name=FIELD_COUNTRY, value=f':flag_{country.lower()}:', inline=True)
-        if map and not country:
-            embed.add_field(name=SPACER, value=SPACER, inline=True)
-        if map:
-            embed.add_field(name=FIELD_CURRENTMAP, value=map, inline=True)
-        if map or country:
-            embed.add_field(name=SPACER, value=SPACER, inline=True)
-        if map_size:
-            embed.add_field(name=FIELD_MAPSIZE, value=map_size, inline=True)
-        if steam_id:
-            if direct_join:
-                if password:
-                    embed.add_field(name=FIELD_JOIN, value=f'steam://connect/{data["address"]}:{port}/{password}', inline=False)
-                else:
-                    embed.add_field(name=FIELD_JOIN, value=f'steam://connect/{data["address"]}:{port}', inline=False)
+            embed.add_field(name=FIELD_PLAYERS, value=players_string, inline=True)
+            embed.add_field(name=FIELD_ADDRESS, value=f'`{address}`', inline=True)
+    
+            if password is None:
+                embed.add_field(name=SPACER, value=SPACER, inline=True)
             else:
-                embed.add_field(name=FIELD_LAUNCH, value=f'steam://rungameid/{steam_id}', inline=False)
-        if server['game'] == "Forgotten Hope 2":
-            url = f"fh2://{data['address']}:{data['port']}"
-            embed.add_field(name=FIELD_JOIN, value=f"<{url}>")
-            image_url = requote_uri('https://raw.githubusercontent.com/radiosmersh/Map-Thumbnails/master/Forgotten Hope 2/%s.png' % data["map"])
+                embed.add_field(name=FIELD_PASSWORD, value=f'`{password}`', inline=True)
 
-        if image_url:
-            embed.set_image(url=image_url)
+            if country:
+                embed.add_field(name=FIELD_COUNTRY, value=f':flag_{country.lower()}:', inline=True)
+            if map and not country:
+                embed.add_field(name=SPACER, value=SPACER, inline=True)
+            if map:
+                embed.add_field(name=FIELD_CURRENTMAP, value=map, inline=True)
+            if map or country:
+                embed.add_field(name=SPACER, value=SPACER, inline=True)
+            if map_size:
+                embed.add_field(name=FIELD_MAPSIZE, value=map_size, inline=True)
+            if steam_id:
+                if direct_join:
+                    if password:
+                        embed.add_field(name=FIELD_JOIN, value=f'steam://connect/{data["address"]}:{port}/{password}', inline=False)
+                    else:
+                        embed.add_field(name=FIELD_JOIN, value=f'steam://connect/{data["address"]}:{port}', inline=False)
+                else:
+                    embed.add_field(name=FIELD_LAUNCH, value=f'steam://rungameid/{steam_id}', inline=False)
+            if server['game'] == "Forgotten Hope 2":
+                url = f"fh2://{data['address']}:{data['port']}"
+                embed.add_field(name=FIELD_JOIN, value=f"<{url}>")
+                image_url = requote_uri('https://raw.githubusercontent.com/radiosmersh/Map-Thumbnails/master/Forgotten Hope 2/%s.png' % data["map"])
 
-        if server['channel'] == 743816489278373950:
-            time_utc = datetime.utcnow()
-            timezone_local = timezone('Asia/Saigon')
-            time_local = utc.localize(time_utc).astimezone(timezone_local)
-            embed.set_footer(text=f'{FIELD_LASTUPDATE}: {time_local.strftime("%Y-%m-%d %H:%M:%S")}{SPACER}', icon_url=CUSTOM_IMAGE_URL)
-        else:
-            embed.set_footer(text=f'{FIELD_LASTUPDATE}: {datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")}{SPACER}', icon_url=CUSTOM_IMAGE_URL)
+            if image_url:
+                embed.set_image(url=image_url)
 
-        if server['channel'] == 743816489278373950:
-                FIELD_STATUS = os.getenv("DGSM_FIELD_STATUS") or "Status"
-                FIELD_CURRENTMAP = os.getenv("DGSM_FIELD_CURRENTMAP") or "Map"
-                FIELD_MAPSIZE = os.getenv("DSGM_FIELD_MAPSIZE") or "Map Size"
-                FIELD_PLAYERS = os.getenv("DGSM_FIELD_PLAYERS") or "Players"
-                FIELD_COUNTRY = os.getenv("DGSM_FIELD_COUNTRY") or "Country"
-                FIELD_LASTUPDATE = os.getenv("DGSM_FIELD_LASTUPDATE") or "Last Update"
-                FIELD_JOIN = os.getenv("DGSM_FIELD_JOIN") or "Join Server"
+            if server['channel'] == 743816489278373950:
+                time_utc = datetime.utcnow()
+                timezone_local = timezone('Asia/Saigon')
+                time_local = utc.localize(time_utc).astimezone(timezone_local)
+                embed.set_footer(text=f'{FIELD_LASTUPDATE}: {time_local.strftime("%Y-%m-%d %H:%M:%S")}{SPACER}', icon_url=CUSTOM_IMAGE_URL)
+            else:
+                embed.set_footer(text=f'{FIELD_LASTUPDATE}: {datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")}{SPACER}', icon_url=CUSTOM_IMAGE_URL)
+
+            if server['channel'] == 743816489278373950:
+                    FIELD_STATUS = os.getenv("DGSM_FIELD_STATUS") or "Status"
+                    FIELD_CURRENTMAP = os.getenv("DGSM_FIELD_CURRENTMAP") or "Map"
+                    FIELD_MAPSIZE = os.getenv("DSGM_FIELD_MAPSIZE") or "Map Size"
+                    FIELD_PLAYERS = os.getenv("DGSM_FIELD_PLAYERS") or "Players"
+                    FIELD_COUNTRY = os.getenv("DGSM_FIELD_COUNTRY") or "Country"
+                    FIELD_LASTUPDATE = os.getenv("DGSM_FIELD_LASTUPDATE") or "Last Update"
+                    FIELD_JOIN = os.getenv("DGSM_FIELD_JOIN") or "Join Server"
+        except Exception as e:
+            self.print_to_console(f'Error Building embed.\n{e}')
         
         return embed
 
@@ -380,7 +386,7 @@ class DiscordGSM():
         if cache_status == "Offline": 
             players = 0
             bots = None
-        if data is False: 
+        if data == False:
             players = "?"
             bots = None
 
