@@ -226,6 +226,10 @@ class DiscordGSM():
         try:    
             self.server_list = self.servers.refresh()
             self.servers.query()
+            message_ids = [s['message_id'] for s in self.server_list]
+            self.server_list = sorted(self.server_list, key=lambda x: (x['channel'], x['players']))
+            for i in len(self.server_list):
+                self.server_list[i]['message_id'] = message_ids[i]
         except Exception as e:
             self.print_to_console(f'Error Querying servers: \n{e}')
         self.print_to_console(f'{self.servers.get_distinct_server_count()} servers queried.')
