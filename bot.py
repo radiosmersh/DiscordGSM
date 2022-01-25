@@ -4,6 +4,7 @@ import requests
 import traceback
 import base64
 from datetime import datetime
+from functools import cmp_to_key
 from pytz import timezone, utc
 from requests.utils import requote_uri
 from copy import deepcopy
@@ -227,8 +228,17 @@ class DiscordGSM():
             self.server_list = self.servers.refresh()
             self.servers.query()
             message_ids = [s['message_id'] for s in self.server_list]
-            self.server_list = sorted(self.server_list, key=lambda x: (x['channel'], x['players']))
-            for i in len(self.server_list):
+
+            def compare(s1, s2):
+                if (diff := s1['channel'] - s2['channel']) == 0:
+                    return diff
+                else:
+                    data = ServerCache(s1["address"], s1["port"]).get_data()
+                    data2 = ServerCache(s2["address"], s2["port"]).get_data()
+                    return int(data2['players']) - int(data['players'])
+
+            self.server_list = sorted(self.server_list, key=cmp_to_key(compare))
+            for i in range(len(self.server_list)):
                 self.server_list[i]['message_id'] = message_ids[i]
         except Exception as e:
             self.print_to_console(f'Error Querying servers: \n{e}')
